@@ -1,0 +1,4 @@
+# ignore files generated during run
+analysis/.snakemake/
+analysis/slurm/slurm_output/
+analysis/brieflow_output/
