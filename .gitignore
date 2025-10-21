@@ -2,3 +2,8 @@
 analysis/.snakemake/
 analysis/slurm/slurm_output/
 analysis/brieflow_output/
+analysis/gcs_temp/
+
+# ignore files generated during test run
+.claude/
+.snakemake/
