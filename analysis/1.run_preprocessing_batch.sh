@@ -36,28 +36,24 @@ for PLATE in $(seq 1 $NUM_PLATES); do
     # This is required for Google Batch to properly deploy the workflow code
     cd "$SCRIPT_DIR/../brieflow/workflow" || exit 1
 
-    # OPTIONAL: Apply monkey patch to disable log retrieval (prevents API throttling)
-    # Uncomment the next 3 lines if you experience log retrieval slowdowns
-    # export PYTHONPATH="$SCRIPT_DIR/..:$PYTHONPATH"
-    # python -c "import patch_googlebatch_logs" && \
+    # Apply monkey patch to disable log retrieval (prevents API throttling)
+    export PYTHONPATH="$SCRIPT_DIR/..:$PYTHONPATH"
+    python -c "import patch_googlebatch_logs" && \
 
-    # Run Snakemake with optimized settings for maximum throughput
-    snakemake --executor googlebatch \
+    # Run Snakemake with ALL optimizations
+    # Most settings come from workflow-profile, but DAG optimization flags must be on command line
+    snakemake \
         --workflow-profile "../../analysis/google_batch/" \
         --snakefile "Snakefile" \
         --configfile "config.yml" \
-        --rerun-triggers mtime \
-        --default-storage-provider gcs \
-        --default-storage-prefix "gs://scale1" \
-        --storage-gcs-project lasagna-199723 \
-        --rerun-incomplete \
         --until all_preprocess \
         --config plate_filter=$PLATE \
-        --preemptible-rules \
-        --preemptible-retries 3 \
-        --max-jobs-per-timespan "10000/1s" \
-        --max-status-checks-per-second 1 \
-        --seconds-between-status-checks 30
+        \
+        `# DAG BUILDING OPTIMIZATIONS (CRITICAL - these cannot be set in config.yaml)` \
+        --latency-wait 0 \
+        --max-inventory-time 300 \
+        --ignore-incomplete \
+        --max-checksum-file-size 0
 
     # Check if Snakemake was successful
     if [ $? -ne 0 ]; then
