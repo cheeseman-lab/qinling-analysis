@@ -1,6 +1,7 @@
 # ignore files generated during run
 analysis/.snakemake/
 analysis/slurm/slurm_output/
+analysis/batch/
 analysis/brieflow_output/
 analysis/gcs_temp/
 

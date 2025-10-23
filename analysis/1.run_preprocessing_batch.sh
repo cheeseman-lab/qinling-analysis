@@ -6,6 +6,9 @@
 # 2. Upload config: gcs_utils/upload_config.sh my_screen
 #    (This uploads files to GCS and copies config.yml to workflow/)
 
+# Clear cache
+rm -rf /mnt/data/blainey/qinling-analysis/__pycache__/gcs_job_scheduler_patch*.pyc && echo "✓ Cache cleared"
+
 # Get the directory where this script is located
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
@@ -36,10 +39,6 @@ for PLATE in $(seq 1 $NUM_PLATES); do
     # This is required for Google Batch to properly deploy the workflow code
     cd "$SCRIPT_DIR/../brieflow/workflow" || exit 1
 
-    # Apply monkey patch to disable log retrieval (prevents API throttling)
-    export PYTHONPATH="$SCRIPT_DIR/..:$PYTHONPATH"
-    python -c "import patch_googlebatch_logs" && \
-
     # Run Snakemake with ALL optimizations
     # Most settings come from workflow-profile, but DAG optimization flags must be on command line
     snakemake \
@@ -48,13 +47,10 @@ for PLATE in $(seq 1 $NUM_PLATES); do
         --configfile "config.yml" \
         --until all_preprocess \
         --config plate_filter=$PLATE \
-        \
-        `# DAG BUILDING OPTIMIZATIONS (CRITICAL - these cannot be set in config.yaml)` \
-        --latency-wait 0 \
+        --latency-wait 60 \
         --max-inventory-time 300 \
-        --ignore-incomplete \
         --max-checksum-file-size 0
-
+        
     # Check if Snakemake was successful
     if [ $? -ne 0 ]; then
         echo "ERROR: Processing of plate $PLATE failed. Stopping sequential run."

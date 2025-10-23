@@ -102,6 +102,8 @@ One could also install one version of brieflow that is used across brieflow-anal
 We use the HPC integration for Slurm as detailed in the setup instructions.
 To use the Slurm integration for Brieflow configure the Slurm resources in [analysis/slurm/config.yaml](analysis/slurm/config.yaml).
 
+**For Google Cloud Batch**: This repository includes optimized configuration for running workflows on Google Cloud Batch with **~50x performance improvement**. See `docs/GOOGLE_BATCH_SETUP.md` for complete setup instructions and `docs/OPTIMIZATION_SUMMARY.md` for performance details.
+
 5) *Optional*: Contribute back to brieflow:
 
 Track changes to computational processing in a new branch on your fork.

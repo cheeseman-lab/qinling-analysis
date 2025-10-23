@@ -23,15 +23,16 @@ googlebatch-service-account: batch-sa@lasagna-199723.iam.gserviceaccount.com
 default-storage-provider: gcs
 default-storage-prefix: gs://scale1
 storage-gcs-project: lasagna-199723
-local-storage-prefix: /mnt/data/blainey/qinling-analysis
+# local-storage-prefix: /mnt/data/blainey/qinling-analysis
 
-# CRITICAL: 'input-output' prevents 21,552+ GCS API calls during DAG building!
+# Shared filesystem usage settings
 shared-fs-usage:
   - persistence
   - source-cache
   - sources
-  - input-output
-  - storage-local-copies
+
+not-retrieve-storage: false  # Don't check GCS during DAG build
+keep-storage-local-copies: false  # Keep local copies after jobs run
 
 # ============================================================================
 # CONTAINER CONFIGURATION
@@ -71,7 +72,7 @@ preemptible-retries: 3
 
 rerun-triggers:
   - mtime
-rerun-incomplete: true
+rerun-incomplete: false
 
 # ============================================================================
 # RESOURCE ALLOCATION
