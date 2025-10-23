@@ -47,7 +47,7 @@ for PLATE in $(seq 1 $NUM_PLATES); do
         --configfile "config.yml" \
         --until all_preprocess \
         --config plate_filter=$PLATE \
-        --latency-wait 60 \
+        --latency-wait 300 \
         --max-inventory-time 300 \
         --max-checksum-file-size 0
         

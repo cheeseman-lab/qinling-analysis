@@ -6,7 +6,7 @@
 # ============================================================================
 
 executor: googlebatch
-jobs: unlimited
+jobs: 500  # Limit to stay under GCE quota of 5000 REGIONAL_INSTANCE_GROUP_MANAGERS
 
 # ============================================================================
 # PROJECT-SPECIFIC SETTINGS
@@ -58,9 +58,9 @@ googlebatch-container-dependencies-installed: true
 # ============================================================================
 
 # Rate limiting (these CAN be set in config)
-max-jobs-per-timespan: "10000/1s"
+max-jobs-per-timespan: "2000/1s"
 max-status-checks-per-second: 1
-seconds-between-status-checks: 30
+seconds-between-status-checks: 60
 
 # Preemptible settings (these CAN be set in config)
 preemptible-rules: []  # Empty list means ALL rules are preemptible
